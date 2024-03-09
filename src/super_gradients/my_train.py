@@ -135,10 +135,10 @@ def main(
     args   = core.load_config(config)
     
     # Prioritize input args --> config file args
-    root     = root or args["root"]
+    root     = root      or args["root"]
     root     = core.Path(root)
-    weights  = weights or args["weights"]
-    model    = model or args["model"]
+    weights  = weights   or args["weights"]
+    model    = model     or args["model"]
     data     = core.Path(args["data"])
     project  = root.name or args["project"]
     fullname = fullname  or args["name"]
