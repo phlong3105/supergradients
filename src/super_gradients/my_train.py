@@ -140,13 +140,15 @@ def main(
     weights  = weights   or args["weights"]
     model    = model     or args["model"]
     data     = core.Path(args["data"])
+    data     = data if data.exists() else _current_dir / "data" / data.name
+    data     = data.config_file()
     project  = root.name or args["project"]
     fullname = fullname  or args["name"]
     save_dir = save_dir  or root / "run" / "train" / fullname
     save_dir = core.Path(save_dir)
     weights  = weights   or args["weights"]
     device   = device    or args["device"]
-    epochs   = epochs    or args["epochs"]
+    epochs   = epochs    or args["max_epochs"]
     exist_ok = exist_ok  or args["exist_ok"]
     verbose  = verbose   or args["verbose"]
     
@@ -161,7 +163,8 @@ def main(
     args["name"]       = fullname
     args["save_dir"]   = save_dir
     args["device"]     = device
-    args["epochs"]     = epochs
+    # args["epochs"]     = epochs
+    args["max_epochs"] = epochs
     args["steps"]      = steps
     args["exist_ok"]   = exist_ok
     args["verbose"]    = verbose

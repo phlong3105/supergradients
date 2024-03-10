@@ -1,3 +1,35 @@
+[tool.poetry]
+name        = "super_gradients"
+version     = "0.1.0"
+description = "super_gradients"
+license     = "MIT License"
+authors     = [
+]
+packages = [
+    {include="super_gradients", from="src"},
+]
+include  = []
+exclude  = []
+
+[tool.poetry.dependencies]
+boto3            = {version="*", optional=true}
+data_gradients   = {version="*", optional=true}
+deprecated       = {version="*", optional=true}
+hydra-core       = {version="*", optional=true}
+json-tricks      = {version="*", optional=true}
+omegaconf        = {version="*", optional=true}
+onnx             = {version="*", optional=true}
+onnxsim          = {version="*", optional=true}
+pip-tools        = {version="*", optional=true}
+sphinx-rtd-theme = {version="*", optional=true}
+stringcase       = {version="*", optional=true}
+treelib          = {version="*", optional=true}
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
 ## Super-Gradients configuration for black/mypy/isort etc tools.
 [tool.isort]
 profile = "black"
