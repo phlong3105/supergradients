@@ -136,28 +136,33 @@ def main(
     
     # Prioritize input args --> config file args
     root     = root      or args["root"]
-    root     = core.Path(root)
     weights  = weights   or args["weights"]
     model    = model     or args["model"]
-    data     = core.Path(args["data"])
-    data     = data if data.exists() else _current_dir / "data" / data.name
-    data     = data.config_file()
-    project  = root.name or args["project"]
+    data     = args["data"]
+    project  = args["project"]
     fullname = fullname  or args["name"]
-    save_dir = save_dir  or root / "run" / "train" / fullname
-    save_dir = core.Path(save_dir)
-    weights  = weights   or args["weights"]
     device   = device    or args["device"]
     epochs   = epochs    or args["max_epochs"]
     exist_ok = exist_ok  or args["exist_ok"]
     verbose  = verbose   or args["verbose"]
     
+    # Parse arguments
+    root     = core.Path(root)
+    weights  = core.to_list(weights)
+    model    = str(model)
+    data     = core.Path(data)
+    data     = data if data.exists() else _current_dir / "data" / data.name
+    data     = str(data.config_file())
+    project  = root.name or project
+    save_dir = save_dir  or root / "run" / "train" / fullname
+    save_dir = core.Path(save_dir)
+    
     # Update arguments
     args["root"]       = root
     args["config"]     = config
     args["weights"]    = weights
-    args["model"]      = str(model)
-    args["data"]       = str(data)
+    args["model"]      = model
+    args["data"]       = data
     args["root"]       = root
     args["project"]    = project
     args["name"]       = fullname
