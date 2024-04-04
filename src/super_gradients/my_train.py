@@ -8,7 +8,7 @@ import socket
 
 import click
 
-from mon import core
+import mon
 from my_utils import (
     coco_detection_yolo_format_train, coco_detection_yolo_format_val, parse_dataset_args,
     parse_detection_yolo_training_params,
@@ -17,8 +17,8 @@ from super_gradients import Trainer
 from super_gradients.training import models
 from super_gradients.training.utils.checkpoint_utils import load_pretrained_weights_local
 
-console       = core.console
-_current_file = core.Path(__file__).absolute()
+console       = mon.console
+_current_file = mon.Path(__file__).absolute()
 _current_dir  = _current_file.parents[0]
 
 
@@ -29,7 +29,7 @@ def train(opt: argparse.Namespace):
     task       = opt.task
     weights    = opt.weights
     weights    = weights[0] if isinstance(weights, list | tuple) else weights
-    weights    = core.Path(weights)
+    weights    = mon.Path(weights)
     model      = opt.model
     data       = opt.data
     save_dir   = opt.save_dir
@@ -131,8 +131,8 @@ def main(
     hostname = socket.gethostname().lower()
     
     # Get config args
-    config = core.parse_config_file(project_root=_current_dir / "config", config=config)
-    args   = core.load_config(config)
+    config = mon.parse_config_file(project_root=_current_dir / "config", config=config)
+    args   = mon.load_config(config)
     
     # Prioritize input args --> config file args
     root     = root      or args.get("root")
@@ -147,15 +147,15 @@ def main(
     verbose  = verbose   or args.get("verbose")
     
     # Parse arguments
-    root     = core.Path(root)
-    weights  = core.to_list(weights)
+    root     = mon.Path(root)
+    weights  = mon.to_list(weights)
     model    = str(model)
-    data     = core.Path(data)
+    data     = mon.Path(data)
     data     = data if data.exists() else _current_dir / "data" / data.name
     data     = str(data.config_file())
     project  = root.name or project
     save_dir = save_dir  or root / "run" / "train" / fullname
-    save_dir = core.Path(save_dir)
+    save_dir = mon.Path(save_dir)
     
     # Update arguments
     args["root"]       = root
@@ -177,8 +177,8 @@ def main(
     opt = argparse.Namespace(**args)
     
     if not exist_ok:
-        core.delete_dir(paths=core.Path(opt.save_dir))
-    core.Path(opt.save_dir).mkdir(parents=True, exist_ok=True)
+        mon.delete_dir(paths=mon.Path(opt.save_dir))
+    mon.Path(opt.save_dir).mkdir(parents=True, exist_ok=True)
     
     # Call train()
     train(opt=opt)

@@ -16,7 +16,7 @@ import numpy as np
 import yaml
 from torch.utils.data import DataLoader
 
-from mon import core, DATA_DIR
+import mon
 from super_gradients.common.abstractions.abstract_logger import get_logger
 from super_gradients.training.dataloaders import get_data_loader
 from super_gradients.training.datasets.data_formats import ConcatenatedTensorFormatConverter
@@ -29,30 +29,30 @@ from super_gradients.training.models.detection_models.pp_yolo_e import PPYoloEPo
 from super_gradients.training.params import TrainingParams
 
 logger        = get_logger(__name__)
-console       = core.console
-_current_file = core.Path(__file__).absolute()
+console       = mon.console
+_current_file = mon.Path(__file__).absolute()
 _current_dir  = _current_file.parents[0]
 
 
 class MyYoloDarknetFormatDetectionDataset(YoloDarknetFormatDetectionDataset):
     
     def _setup_data_source(self) -> int:
-        if isinstance(self.images_dir, str | core.Path):
+        if isinstance(self.images_dir, str | mon.Path):
             self.images_dir = [self.images_dir]
-        if isinstance(self.labels_dir, str | core.Path):
+        if isinstance(self.labels_dir, str | mon.Path):
             self.labels_dir = [self.labels_dir]
         
         self.data_dir      = str(self.data_dir)
-        self.images_folder = [core.Path(self.data_dir) / x for x in self.images_dir]
-        self.labels_folder = [core.Path(self.data_dir) / x for x in self.labels_dir]
+        self.images_folder = [mon.Path(self.data_dir) / x for x in self.images_dir]
+        self.labels_folder = [mon.Path(self.data_dir) / x for x in self.labels_dir]
         
         all_images_file_names = []
         all_labels_file_names = []
         for images_f in self.images_folder:
-            all_images_file_names += list(image for image in core.Path(images_f).rglob("*") if image.is_image_file())
+            all_images_file_names += list(image for image in mon.Path(images_f).rglob("*") if image.is_image_file())
         for images_f in all_images_file_names:
             label_file = str(images_f).replace("images", "labels")
-            label_file = core.Path(label_file)
+            label_file = mon.Path(label_file)
             label_file = label_file.parent / f"{label_file.stem}.txt"
             all_labels_file_names.append(label_file)
         
@@ -69,7 +69,7 @@ class MyYoloDarknetFormatDetectionDataset(YoloDarknetFormatDetectionDataset):
         for images_f, labels_f in zip(self.images_folder, self.labels_folder):
             # all_images_file_names += list(image_name for image_name in os.listdir(images_f) if is_image(image_name))
             # all_labels_file_names += list(label_name for label_name in os.listdir(labels_f) if label_name.endswith(".txt"))
-            all_images_file_names += list(image for image in core.Path(images_f).rglob("*") if image.is_image_file())
+            all_images_file_names += list(image for image in mon.Path(images_f).rglob("*") if image.is_image_file())
             
         remove_file_extension = lambda file_name: os.path.splitext(os.path.basename(file_name))[0]
         unique_image_file_base_names = set(remove_file_extension(image_file_name) for image_file_name in all_images_file_names)
@@ -176,11 +176,11 @@ def coco_detection_yolo_format_val(dataset_params: dict = None, dataloader_param
     )
 
 
-def parse_dataset_args(data: str | core.Path) -> dict:
-    assert isinstance(data, dict | str | core.Path), f"Invalid data file: {data}"
+def parse_dataset_args(data: str | mon.Path) -> dict:
+    assert isinstance(data, dict | str | mon.Path), f"Invalid data file: {data}"
     
-    if isinstance(data, str | core.Path):
-        assert core.Path(data).is_yaml_file(), f"Invalid data file: {data}"
+    if isinstance(data, str | mon.Path):
+        assert mon.Path(data).is_yaml_file(), f"Invalid data file: {data}"
         with open(data, errors="ignore") as f:
             data = yaml.safe_load(f)
     
@@ -190,7 +190,7 @@ def parse_dataset_args(data: str | core.Path) -> dict:
     if isinstance(data["names"], dict):
         data["names"] = list(data["names"].values())
     
-    path = core.Path(data.get("path", ""))
+    path = mon.Path(data.get("path", ""))
     # path = DATA_DIR / path
     assert (DATA_DIR / path).exists(), f"Invalid data path: {path}"
     for k in ["train", "val", "test", "names"]:
