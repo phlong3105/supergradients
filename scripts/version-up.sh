@@ -27,7 +27,7 @@ function help() {
   echo ''
   echo 'Version: MAJOR.MINOR.PATCH'
   echo ''
-  echo 'Reference:'
+  echo 'References:'
   echo '  http://semver.org/'
   echo ''
   echo 'Versions priority:'

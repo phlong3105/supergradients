@@ -75,7 +75,7 @@ class LadderResNet(nn.Module):
         Normalization layer used in backbone network (default: :class:`mxnet.gluon.nn.BatchNorm`;
         for Synchronized Cross-GPU BachNormalization).
 
-    Reference:
+    References:
 
         - He, Kaiming, et al. "Deep residual learning for image recognition."
             Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.

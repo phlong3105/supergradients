@@ -5,7 +5,7 @@ mixup: Beyond Empirical Risk Minimization (https://arxiv.org/abs/1710.09412)
 
 CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features (https://arxiv.org/abs/1905.04899)
 
-Code Reference:
+Code References:
 CutMix: https://github.com/clovaai/CutMix-PyTorch
 CutMix by timm: https://github.com/rwightman/pytorch-image-models/timm
 
