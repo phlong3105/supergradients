@@ -1,5 +1,5 @@
 [tool.poetry]
-name        = "super_gradients"
+name        = "supergradients"
 version     = "0.1.0"
 description = "super_gradients"
 license     = "MIT License"
