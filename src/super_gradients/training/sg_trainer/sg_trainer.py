@@ -239,12 +239,14 @@ class Trainer:
         :return: the model and the output of trainer.train(...) (i.e results tuple)
         """
 
-        # TODO: bind checkpoint_run_id
         setup_device(
             device=core_utils.get_param(cfg, "device"),
             multi_gpu=core_utils.get_param(cfg, "multi_gpu"),
             num_gpus=core_utils.get_param(cfg, "num_gpus"),
         )
+
+        # Create resolved config before instantiation
+        recipe_logged_cfg = {"recipe_config": OmegaConf.to_container(cfg, resolve=True)}
 
         # INSTANTIATE ALL OBJECTS IN CFG
         cfg = hydra.utils.instantiate(cfg)
@@ -283,7 +285,6 @@ class Trainer:
 
         test_loaders = maybe_instantiate_test_loaders(cfg)
 
-        recipe_logged_cfg = {"recipe_config": OmegaConf.to_container(cfg, resolve=True)}
         # TRAIN
         res = trainer.train(
             model=model,
@@ -1420,6 +1421,14 @@ class Trainer:
         self.training_params.mixed_precision = self._initialize_mixed_precision(self.training_params.mixed_precision)
 
         self.ckpt_best_name = self.training_params.ckpt_best_name
+
+        if self.training_params.average_best_models and not self.training_params.save_model:
+            logger.warning(
+                "'training_params.average_best_models'  is enabled, but 'training_params.save_model' is disabled. \n"
+                "Model averaging requires saving snapshot checkpoints to function properly. As a result, "
+                "'training_params.average_best_models' will be disabled. "
+            )
+            self.training_params.average_best_models = False
 
         self.max_train_batches = self.training_params.max_train_batches
         self.max_valid_batches = self.training_params.max_valid_batches
